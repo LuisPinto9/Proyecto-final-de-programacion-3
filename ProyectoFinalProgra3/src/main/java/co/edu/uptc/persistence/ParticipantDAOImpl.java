@@ -5,9 +5,7 @@ import co.edu.uptc.logic.Event;
 import co.edu.uptc.logic.Participant;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ParticipantDAOImpl implements ParticipantDAO {
 
@@ -15,16 +13,10 @@ public class ParticipantDAOImpl implements ParticipantDAO {
     private static final String URL = "jdbc:mysql://localhost/deportive_club";
     private static final String USER = "adminClub";
     private static final String PASSWORD = "12345";
-    private PreparedStatement ps;
-    private ResultSet rs;
 
     @Override
     public void addParticipant(Participant participant) {
-        try {
-            Class.forName(DRIVER);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+
 
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
             Statement statement = connection.createStatement();
@@ -40,17 +32,14 @@ public class ParticipantDAOImpl implements ParticipantDAO {
             for (Event event : events) {
                 String discpilineType = event.getDisciplineType().equals(DisciplineType.Grupal) ? "Grupal" : "Individual";
 
-                ps = connection.prepareStatement("INSERT INTO events (event_name,discipline,discipline_type,ref_participant,event_position) VALUES (?,?,?,?,?)");
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO events (event_name,discipline,discipline_type,ref_participant,event_position) VALUES (?,?,?,?,?)");
                 ps.setString(1, event.getEventName());
                 ps.setString(2, event.getDiscipline());
                 ps.setString(3, discpilineType);
                 ps.setString(4, id);
                 ps.setInt(5, event.getEventPosition());
-                //  final String query1 = "INSERT INTO events (" + "event_name" + "," + "discipline" + "," + "discipline_type" + "," + "ref_participant" + "event_position" + ") VALUES(" + "'" + event.getEventName() + "','" + event.getDiscipline() + "','" + discpilineType + "','" + id + "','" + event.getEventPosition() + "')";
                 ps.executeUpdate();
             }
-
-            System.out.println(query);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -74,6 +63,8 @@ public class ParticipantDAOImpl implements ParticipantDAO {
 
     @Override
     public ArrayList<Participant> getParticipants() {
+
+
 
         ArrayList<Participant> participants = new ArrayList<>();
 
