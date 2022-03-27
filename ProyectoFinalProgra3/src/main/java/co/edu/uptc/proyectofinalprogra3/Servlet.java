@@ -31,6 +31,12 @@ public class Servlet extends HttpServlet {
         Gson gson = new Gson();
         String stAux = gson.toJson( participants );
 
+        try(
+                PrintWriter out = response.getWriter();
+        ){
+            out.println(stAux);
+        }
+
         request.setAttribute("participants", stAux);
         RequestDispatcher rd = request.getRequestDispatcher("script.js");
         rd.forward(request,response);

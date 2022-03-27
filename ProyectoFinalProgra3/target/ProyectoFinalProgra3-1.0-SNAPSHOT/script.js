@@ -5,6 +5,9 @@ function begin() {
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const data = JSON.parse(xhr.responseText, true)
+            data.forEach(e=>{
+                alert(e.name)
+            })
             listData(data)
         }
     }
