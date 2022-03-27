@@ -46,7 +46,6 @@ public class ParticipantDAOImpl implements ParticipantDAO {
                 ps.setInt(5, event.getEventPosition());
                 ps.executeUpdate();
 
-                connection.close();
             }
 
         } catch (SQLException throwables) {
@@ -66,6 +65,13 @@ public class ParticipantDAOImpl implements ParticipantDAO {
 
     @Override
     public Participant findById(String id) {
+        if (getParticipants()!= null){
+            for (Participant participant: getParticipants()) {
+                if (participant.getId().equals(id)){
+                    return participant;
+                }
+            }
+        }
         return null;
     }
 
@@ -92,7 +98,6 @@ public class ParticipantDAOImpl implements ParticipantDAO {
                 Participant participant = new Participant(name, id, getEvents(id));
                 participants.add(participant);
             }
-            connection.close();
             return participants;
 
         } catch (SQLException throwables) {
@@ -123,7 +128,6 @@ public class ParticipantDAOImpl implements ParticipantDAO {
                     events.add(e);
                 }
             }
-            connection.close();
             return events;
 
         } catch (SQLException throwables) {

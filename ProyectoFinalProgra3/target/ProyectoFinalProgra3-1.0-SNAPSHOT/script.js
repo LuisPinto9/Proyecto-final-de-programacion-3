@@ -1,12 +1,10 @@
 function begin() {
 
     const xhr = new XMLHttpRequest();
-    xhr.open('post', 'servlet-control', true)
+    xhr.open('get', 'servlet-control', true)
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            const data = JSON.parse(xhr.getResponseHeader("participants"))
-            console.log(data)
-            data.forEach(e=>alert(`${e.name}`))
+            const data = JSON.parse(xhr.responseText, true)
             listData(data)
         }
     }
@@ -17,10 +15,10 @@ function begin() {
 function listButton() {
 
     const xhr2 = new XMLHttpRequest();
-    xhr2.open('get', 'control.php?option=1', true)
+    xhr2.open('get', 'servlet-control', true)
     xhr2.onreadystatechange = () => {
         if (xhr2.readyState === 4 && xhr2.status === 200) {
-            const data = JSON.parse(xhr2.response)
+            const data = JSON.parse(xhr2.response,true)
             listData(data)
 
         }
@@ -53,7 +51,9 @@ function reset3() {
 function listData(data) {
 
     data.sort((a, b) => a.name.localeCompare(b.name)).forEach((participant) => {
-        initialTable(participant.discipline, participant.name, participant.id, participant.eventPosition, participant.disciplineType, participant.event)
+        participant.events.forEach((event) =>{
+            initialTable(event.discipline, participant.name, participant.id, event.eventPosition, event.disciplineType, event.eventName)
+        })
     })
 }
 
