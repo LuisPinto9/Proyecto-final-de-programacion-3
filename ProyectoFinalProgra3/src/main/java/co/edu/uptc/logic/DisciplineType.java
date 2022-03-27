@@ -1,5 +1,5 @@
 package co.edu.uptc.logic;
 
-public enum EventType {
+public enum DisciplineType {
     Grupal, Individual
 }
