@@ -24,34 +24,37 @@ public class Servlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         ParticipantDAOFactory factory = new ParticipantDAOFactory();
-        response.setContentType("text/json");
-
-        ArrayList<Participant> participants = factory.createParticipantDAO().getParticipants();
-
         Gson gson = new Gson();
-        String stAux = gson.toJson( participants );
+        int option = Integer.parseInt(request.getParameter("option"));
 
-        try(
-                PrintWriter out = response.getWriter();
-        ){
-            out.println(stAux);
+        switch (option) {
+            case 1:
+
+                response.setContentType("text/json");
+                ArrayList<Participant> participants = factory.createParticipantDAO().getParticipants();
+                String stAux = gson.toJson(participants);
+
+                try (
+                        PrintWriter out = response.getWriter();
+                ) {
+                    out.println(stAux);
+                }
+
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
         }
 
-        request.setAttribute("participants", stAux);
-        RequestDispatcher rd = request.getRequestDispatcher("script.js");
-        rd.forward(request,response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        /*response.setContentType("text/json");
-        ArrayList<Participant> participants = factory.createParticipantDAO().getParticipants();
-        Gson gson = new Gson();
-        String stAux = gson.toJson( participants );
-        PrintWriter out = response.getWriter();
-        out.println(participants);
-        request.setAttribute("participants", stAux);
-        RequestDispatcher rd = request.getRequestDispatcher("script.js");
-        rd.forward(request,response);*/
+
     }
 }
