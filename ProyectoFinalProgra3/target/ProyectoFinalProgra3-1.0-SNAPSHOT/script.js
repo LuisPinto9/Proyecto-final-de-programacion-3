@@ -4,7 +4,7 @@ function begin() {
     xhr.open('get', 'servlet-control?option=1', true)
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText, true)
+            const data = JSON.parse(xhr.responseText)
             listData(data)
         }
     }
@@ -15,10 +15,10 @@ function begin() {
 function listButton() {
 
     const xhr2 = new XMLHttpRequest();
-    xhr2.open('get', 'servlet-control', true)
+    xhr2.open('get', 'servlet-control?option=1', true)
     xhr2.onreadystatechange = () => {
         if (xhr2.readyState === 4 && xhr2.status === 200) {
-            const data = JSON.parse(xhr2.response,true)
+            const data = JSON.parse(xhr2.response)
             listData(data)
 
         }
