@@ -10,15 +10,21 @@ import java.util.ArrayList;
 public class ParticipantDAOImpl implements ParticipantDAO {
 
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String URL = "jdbc:mysql://localhost/deportive_club";
+    private static final String DB = "deportive_club";
+    private static final String URL = "jdbc:mysql://localhost:3306/";
     private static final String USER = "adminClub";
     private static final String PASSWORD = "12345";
 
     @Override
     public void addParticipant(Participant participant) {
 
+        try {
+            Class.forName(DRIVER);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(URL + DB, USER, PASSWORD)) {
             Statement statement = connection.createStatement();
 
             String id = participant.getId();
@@ -39,6 +45,8 @@ public class ParticipantDAOImpl implements ParticipantDAO {
                 ps.setString(4, id);
                 ps.setInt(5, event.getEventPosition());
                 ps.executeUpdate();
+
+                connection.close();
             }
 
         } catch (SQLException throwables) {
@@ -64,11 +72,15 @@ public class ParticipantDAOImpl implements ParticipantDAO {
     @Override
     public ArrayList<Participant> getParticipants() {
 
-
+        try {
+            Class.forName(DRIVER);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         ArrayList<Participant> participants = new ArrayList<>();
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + DB, USER, PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet result = statement.executeQuery("select * from participants")
         ) {
@@ -80,7 +92,7 @@ public class ParticipantDAOImpl implements ParticipantDAO {
                 Participant participant = new Participant(name, id, getEvents(id));
                 participants.add(participant);
             }
-
+            connection.close();
             return participants;
 
         } catch (SQLException throwables) {
@@ -92,19 +104,26 @@ public class ParticipantDAOImpl implements ParticipantDAO {
 
     private ArrayList<Event> getEvents(String id) {
 
+        try {
+            Class.forName(DRIVER);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         ArrayList<Event> events = new ArrayList<>();
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(URL + DB, USER, PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet result = statement.executeQuery("select * from events")
         ) {
             while (result.next()) {
-                if (result.getString("ref_participant").equals(id)){
+                if (result.getString("ref_participant").equals(id)) {
                     DisciplineType disciplineType = result.getString("discipline_type").equals("Grupal") ? DisciplineType.Grupal : DisciplineType.Individual;
                     Event e = new Event(result.getString("event_name"), result.getString("discipline"), disciplineType, result.getInt("event_position"));
                     events.add(e);
                 }
             }
+            connection.close();
             return events;
 
         } catch (SQLException throwables) {

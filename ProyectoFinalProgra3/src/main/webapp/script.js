@@ -1,12 +1,12 @@
 function begin() {
 
     const xhr = new XMLHttpRequest();
-    xhr.open('post', 'servlet-control', true)
+    xhr.open('get', 'servlet-control', true)
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            const data = JSON.parse(xhr.getResponseHeader("participants"))
+            const data = JSON.parse(xhr.responseText)
             console.log(data)
-            data.forEach(e=>alert(`${e.name}`))
+            //data.forEach(e=>alert(`${e.name}`))
             listData(data)
         }
     }
