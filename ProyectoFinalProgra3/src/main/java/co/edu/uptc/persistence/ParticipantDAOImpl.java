@@ -59,9 +59,26 @@ public class ParticipantDAOImpl implements ParticipantDAO {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(String id2) {
+        try {
+            Class.forName(DRIVER);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-    }
+        Participant participant = findById(id2);
+        try (Connection connection = DriverManager.getConnection(URL + DB, USER, PASSWORD)) {
+            Statement statement2 = connection.createStatement();
+            String id3 = participant.getId();
+            String query = "DELETE from participants WHERE participants . id=" + "'" + id3 + "'  ";
+            String query2 = "DELETE from events WHERE ref_participant=" + "'" + id3 + "'  ";
+            statement2.execute(query2);
+            statement2.execute(query);
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }}
 
     @Override
     public Participant findById(String id) {

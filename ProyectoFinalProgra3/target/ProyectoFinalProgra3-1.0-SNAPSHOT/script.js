@@ -123,7 +123,7 @@ function comprobarExistencia() {
                         status1 = true
                     }
                 })
-                if(status1 === false){
+                if (status1 === false) {
                     alert("Ese ususario ya existe, debe colocar el mismo nombre")
                 }
 
@@ -182,19 +182,20 @@ document.getElementById("addButton").addEventListener("click", () => {
     let event = document.getElementById("createEvent").value
     let eventPosition = document.getElementById("createEventPosition").value
 
-    if (name === "" && id === "" && discipline === "Seleccione..." && disciplineType === "Seleccione..." && event === "Seleccione..." && eventPosition === "") {
+    if (name === "" || id === "" || discipline === "Seleccione..." || disciplineType === "Seleccione..." || event === "Seleccione..." || eventPosition === "") {
         alert("Rellene todos los espaios")
 
     } else {
         const xhr3 = new XMLHttpRequest();
-        xhr3.open("get", `control.php?option=2&name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`, true)
+        xhr3.open("post", "servlet-control?option=2", true)
         xhr3.onreadystatechange = () => {
             if (xhr3.readyState === 4 && xhr3.status === 200) {
-
             }
 
         }
-        xhr3.send(null)
+        const data = `name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`;
+        xhr3.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr3.send(data)
         listButton()
         document.getElementById("create").reset();
 
