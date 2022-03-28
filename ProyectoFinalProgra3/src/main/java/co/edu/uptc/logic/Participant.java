@@ -18,28 +18,12 @@ public class Participant {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public ArrayList<Event> getEvents() {
         return events;
-    }
-
-    public void setEvents(ArrayList<Event> events) {
-        this.events = events;
-    }
-
-    public void addEvents(Event event){
-        this.events.add(event);
     }
 
     @Override
