@@ -56,6 +56,35 @@ public class ParticipantDAOImpl implements ParticipantDAO {
     @Override
     public void updateParticipant(Participant participant) {
 
+        try {
+            Class.forName(DRIVER);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try (Connection connection = DriverManager.getConnection(URL + DB, USER, PASSWORD)) {
+
+            String id = participant.getId();
+
+            ArrayList<Event> events = participant.getEvents();
+
+            for (Event event : events) {
+                String discpilineType = event.getDisciplineType().equals(DisciplineType.Grupal) ? "Grupal" : "Individual";
+
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO events (event_name,discipline,discipline_type,ref_participant,event_position) VALUES (?,?,?,?,?)");
+                ps.setString(1, event.getEventName());
+                ps.setString(2, event.getDiscipline());
+                ps.setString(3, discpilineType);
+                ps.setString(4, id);
+                ps.setInt(5, event.getEventPosition());
+                ps.executeUpdate();
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
     }
 
     @Override

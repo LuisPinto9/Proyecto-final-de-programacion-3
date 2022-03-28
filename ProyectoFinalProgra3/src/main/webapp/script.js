@@ -91,7 +91,6 @@ function initialTable(discipline, name, id, position, disciplineType, event) {
 }
 
 document.getElementById("createId").addEventListener("change", () => {
-
     comprobarExistencia();
 })
 
@@ -144,6 +143,16 @@ function compare(idC, data) {
     return status
 }
 
+function compare1(nameC, data) {
+    let status = false
+    data.forEach(e => {
+        if (e.name === nameC) {
+            status = true
+        }
+    })
+    return status
+}
+
 function disableButton(estado) {
     const button = document.getElementById("addButton")
     const disci = document.getElementById("createDiscipline")
@@ -173,6 +182,24 @@ function disableButton(estado) {
     }
 }
 
+function disableButton1(estado) {
+    const button = document.getElementById("addButton")
+
+    switch (estado) {
+
+        case true:
+
+            button.disabled = true
+
+            break;
+        case false:
+
+            button.disabled = false
+            break;
+    }
+}
+
+
 document.getElementById("addButton").addEventListener("click", () => {
 
     let name = document.getElementById("createName").value
@@ -201,6 +228,37 @@ document.getElementById("addButton").addEventListener("click", () => {
     }
 })
 
+function data() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("get", 'servlet-control?option=1', true)
+            return data = JSON.parse(xhr.responseText);
+
+}
+
+function add(name, id, discipline, disciplineType, event, eventPosition) {
+    const xhr9 = new XMLHttpRequest();
+    xhr9.open("post", 'servlet-control?option=4', true)
+    xhr9.onreadystatechange = () => {
+        if (xhr9.readyState === 4 && xhr9.status === 200) {
+        }
+    }
+    const data = `name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`;
+    xhr9.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr9.send(data)
+}
+
+function add1(name, id, discipline, disciplineType, event, eventPosition) {
+    const xhr3 = new XMLHttpRequest();
+    xhr3.open("post", 'servlet-control?option=2', true)
+    xhr3.onreadystatechange = () => {
+        if (xhr3.readyState === 4 && xhr3.status === 200) {
+        }
+    }
+    const data = `name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`;
+    xhr3.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr3.send(data)
+}
+
 document.getElementById("deleteButton").addEventListener("click", () => {
 
     let id = document.getElementById("deleteId").value
@@ -227,7 +285,7 @@ document.getElementById("searchButton").addEventListener('click', () => {
     const initio = document.getElementById('id').value;
 
     const xhr5 = new XMLHttpRequest();
-    xhr5.open("GET", "control.php?option=1", true);
+    xhr5.open("GET", "servlet-control?option=1", true);
 
     let cont = 0;
 
@@ -237,124 +295,113 @@ document.getElementById("searchButton").addEventListener('click', () => {
 
             let tabla = document.getElementById('tabla');
 
-            for (let i = 0; i < data.length; ++i) {
-
+            data.forEach(participant => {
                 let fila = document.createElement('tr');
                 let td = document.createElement('td');
 
-                if (data[i].id === initio) {
+                if (participant.id === initio) {
 
-                    const name = document.getElementById("labelName")
-                    const id = document.getElementById("labelId")
+                    participant.events.forEach(event => {
+                        const name = document.getElementById("labelName")
+                        const id = document.getElementById("labelId")
 
-                    name.innerText = data[i].name
-                    id.innerText = data[i].id
+                        name.innerText = participant.name
+                        id.innerText = participant.id
 
-                    cont++;
+                        cont++;
 
-                    td = document.createElement('td');
-                    td.innerText = data[i].discipline;
-                    fila.appendChild(td);
+                        td = document.createElement('td');
+                        td.innerText = event.discipline;
+                        fila.appendChild(td);
 
 
-                    td = document.createElement('td');
-                    td.innerText = data[i].disciplineType;
-                    fila.appendChild(td);
+                        td = document.createElement('td');
+                        td.innerText = event.disciplineType;
+                        fila.appendChild(td);
 
-                    td = document.createElement('td');
-                    td.innerText = data[i].event;
-                    fila.appendChild(td);
+                        td = document.createElement('td');
+                        td.innerText = event.eventName;
+                        fila.appendChild(td);
 
-                    td = document.createElement('td');
-                    td.innerText = data[i].eventPosition;
-                    fila.appendChild(td);
+                        td = document.createElement('td');
+                        td.innerText = event.eventPosition;
+                        fila.appendChild(td);
+                    })
+
 
                 }
                 bodyS.appendChild(fila);
+            })
 
-            }
-
-            tabla.appendChild(bodyS);
         }
-    };
+
+        tabla.appendChild(bodyS);
+    }
+
     xhr5.send(null);
 
     document.getElementById("form3").reset()
     reset2()
 })
 
-function events() {
-    let events = Array()
-    const xhr6 = new XMLHttpRequest();
-    xhr6.open('get', 'control.php?option=1', true)
-    xhr6.onreadystatechange = () => {
-        if (xhr6.readyState === 4 && xhr6.status === 200) {
-            const data = JSON.parse(xhr6.responseText);
-            data.sort((a, b) => a.name.localeCompare(b.name)).forEach(e => {
-                if (!competRepeated(e, events)) {
-                    document.getElementById("events").add(new Option(e.event))
-                    events.push(e)
-                }
-            })
-        }
-    }
-    xhr6.send(null)
-}
-
 document.getElementById("resultsButton").addEventListener("click", () => {
     const initio = document.getElementById('events').value;
 
 
     const xhr7 = new XMLHttpRequest();
-    xhr7.open("GET", "control.php?option=1", true);
+    xhr7.open("GET", "servlet-control?option=1", true);
 
     let cont1 = 0;
 
     xhr7.onreadystatechange = () => {
         if (xhr7.readyState === 4 && xhr7.status === 200) {
             const data = JSON.parse(xhr7.responseText);
-            data.sort((a, b) => a.eventPosition.localeCompare(b.eventPosition))
+            data.forEach(p =>{
+                p.events.forEach(e=>{
+                    let tabla = document.getElementById('tabla1');
 
-            let tabla = document.getElementById('tabla1');
+                    for (let i = 0; i < data.length; ++i) {
 
-            for (let i = 0; i < data.length; ++i) {
+                        let fila1 = document.createElement('tr');
+                        let td1 = document.createElement('td');
 
-                let fila1 = document.createElement('tr');
-                let td1 = document.createElement('td');
+                        if (data[i].event === initio) {
 
-                if (data[i].event === initio) {
+                            cont1++;
+                            td1.innerText = p.name;
+                            fila1.appendChild(td1);
 
-                    cont1++;
-                    td1.innerText = data[i].name;
-                    fila1.appendChild(td1);
+                            td1 = document.createElement('td');
+                            td1.innerText = p.id;
+                            fila1.appendChild(td1);
 
-                    td1 = document.createElement('td');
-                    td1.innerText = data[i].id;
-                    fila1.appendChild(td1);
-
-                    td1 = document.createElement('td');
-                    td1.innerText = data[i].discipline;
-                    fila1.appendChild(td1);
+                            td1 = document.createElement('td');
+                            td1.innerText = e.discipline;
+                            fila1.appendChild(td1);
 
 
-                    td1 = document.createElement('td');
-                    td1.innerText = data[i].disciplineType;
-                    fila1.appendChild(td1);
+                            td1 = document.createElement('td');
+                            td1.innerText = e.disciplineType;
+                            fila1.appendChild(td1);
 
-                    td1 = document.createElement('td');
-                    td1.innerText = data[i].event;
-                    fila1.appendChild(td1);
+                            td1 = document.createElement('td');
+                            td1.innerText = e.eventName;
+                            fila1.appendChild(td1);
 
-                    td1 = document.createElement('td');
-                    td1.innerText = data[i].eventPosition;
-                    fila1.appendChild(td1);
+                            td1 = document.createElement('td');
+                            td1.innerText = e.eventPosition;
+                            fila1.appendChild(td1);
 
-                }
-                bodyS1.appendChild(fila1);
+                        }
+                        bodyS1.appendChild(fila1);
 
-            }
+                    }
 
-            tabla.appendChild(bodyS1);
+                    tabla.appendChild(bodyS1);
+                })
+            })
+
+
         }
     };
     xhr7.send(null);
@@ -362,16 +409,6 @@ document.getElementById("resultsButton").addEventListener("click", () => {
     document.getElementById("form4").reset()
     reset3()
 })
-
-function competRepeated(comp, event) {
-    let status = false
-    event.forEach(e => {
-        if (e.event === comp.event) {
-            status = true
-        }
-    })
-    return status
-}
 
 function SoloNumeros(evt) {
     if (window.event) {

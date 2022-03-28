@@ -45,7 +45,14 @@ public class Servlet extends HttpServlet {
             events.add(event1);
 
             Participant participant = new Participant(request.getParameter("name"), request.getParameter("id"), events);
-            ParticipantDAOFactory.createParticipantDAO().addParticipant(participant);
+
+            ParticipantDAOFactory.createParticipantDAO().getParticipants().forEach(e->{
+                if (request.getParameter("name").equals(e.getName()) && request.getParameter("id").equals( e.getId())){
+                    ParticipantDAOFactory.createParticipantDAO().updateParticipant(participant);
+                }else {
+                    ParticipantDAOFactory.createParticipantDAO().addParticipant(participant);
+                }
+            });
 
             try (PrintWriter out = response.getWriter()) {
                 out.println(request.getParameter("name"));
