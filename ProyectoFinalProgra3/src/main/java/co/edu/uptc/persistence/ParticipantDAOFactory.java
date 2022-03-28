@@ -1,7 +1,7 @@
 package co.edu.uptc.persistence;
 
 public class ParticipantDAOFactory {
-    public ParticipantDAO createParticipantDAO(){
+    public static ParticipantDAO createParticipantDAO(){
         return new ParticipantDAOImpl();
     }
 }

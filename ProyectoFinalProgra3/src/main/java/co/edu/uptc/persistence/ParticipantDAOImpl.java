@@ -59,7 +59,7 @@ public class ParticipantDAOImpl implements ParticipantDAO {
     }
 
     @Override
-    public void delete(String id2) {
+    public void deleteParticipant(String id2) {
         try {
             Class.forName(DRIVER);
         } catch (ClassNotFoundException e) {

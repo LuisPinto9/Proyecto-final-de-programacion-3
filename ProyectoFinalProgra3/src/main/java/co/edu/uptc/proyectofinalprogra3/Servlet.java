@@ -21,15 +21,13 @@ public class Servlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         if (request.getParameter("option").equals("1")) {
-            ParticipantDAOFactory factory = new ParticipantDAOFactory();
+
             Gson gson = new Gson();
             response.setContentType("text/json");
-            ArrayList<Participant> participants = factory.createParticipantDAO().getParticipants();
+            ArrayList<Participant> participants = ParticipantDAOFactory.createParticipantDAO().getParticipants();
             String stAux = gson.toJson(participants);
 
-            try (
-                    PrintWriter out = response.getWriter();
-            ) {
+            try (PrintWriter out = response.getWriter()) {
                 out.println(stAux);
             }
         }
@@ -40,26 +38,29 @@ public class Servlet extends HttpServlet {
 
         if (request.getParameter("option").equals("2")) {
 
-
-            ParticipantDAOFactory factory = new ParticipantDAOFactory();
-            DisciplineType disciplineType = request.getParameter("discipline_type").equals("Grupal") ? DisciplineType.Grupal : DisciplineType.Individual;
-
-            Event event = new Event(request.getParameter("event"), request.getParameter("discipline"), disciplineType, Integer.parseInt(request.getParameter("eventPosition")));
             ArrayList<Event> events = new ArrayList<>();
-            events.add(event);
-            Participant participant = new Participant(request.getParameter("name"), request.getParameter("id"), events);
-            factory.createParticipantDAO().addParticipant(participant);
 
-            try (
-                    PrintWriter out = response.getWriter()
-            ) {
+            DisciplineType disciplineType = request.getParameter("disciplineType").equals("Grupal") ? DisciplineType.Grupal : DisciplineType.Individual;
+            Event event1 = new Event(request.getParameter("event"), request.getParameter("discipline"), disciplineType, Integer.parseInt(request.getParameter("eventPosition")));
+            events.add(event1);
+
+            Participant participant = new Participant(request.getParameter("name"), request.getParameter("id"), events);
+            ParticipantDAOFactory.createParticipantDAO().addParticipant(participant);
+
+            try (PrintWriter out = response.getWriter()) {
                 out.println(request.getParameter("name"));
                 out.println(request.getParameter("id"));
-                out.println(request.getParameter("event"));
                 out.println(request.getParameter("discipline"));
                 out.println(disciplineType);
+                out.println(request.getParameter("event"));
                 out.println(request.getParameter("eventPosition"));
+            }
+        }else if(request.getParameter("option").equals("3")){
 
+            ParticipantDAOFactory.createParticipantDAO().deleteParticipant(request.getParameter("id"));
+
+            try (PrintWriter out = response.getWriter()) {
+                out.println(request.getParameter("id"));
             }
         }
     }

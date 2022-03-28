@@ -187,11 +187,10 @@ document.getElementById("addButton").addEventListener("click", () => {
 
     } else {
         const xhr3 = new XMLHttpRequest();
-        xhr3.open("post", "servlet-control?option=2", true)
+        xhr3.open("post", 'servlet-control?option=2', true)
         xhr3.onreadystatechange = () => {
             if (xhr3.readyState === 4 && xhr3.status === 200) {
             }
-
         }
         const data = `name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`;
         xhr3.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -209,13 +208,14 @@ document.getElementById("deleteButton").addEventListener("click", () => {
         alert("Rellene el campo correspondiente")
     } else {
         const xhr4 = new XMLHttpRequest();
-        xhr4.open("get", `control.php?option=3&id=${id}`, true)
+        xhr4.open("post", `servlet-control?option=3`, true)
         xhr4.onreadystatechange = () => {
             if (xhr4.readyState === 4 && xhr4.status === 200) {
             }
-
         }
-        xhr4.send(null)
+        const data = `id=${id}`;
+        xhr4.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr4.send(data)
         listButton()
         document.getElementById("form2").reset();
     }
