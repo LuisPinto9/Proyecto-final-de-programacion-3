@@ -22,25 +22,26 @@
             <h1 style="text-align: center">Buenas, esta es la lista de todos los registros que hay</h1>
         </div>
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col">Codigo</th>
-                <th scope="col">Disciplina</th>
-                <th scope="col">Tipo de Disciplina</th>
-                <th scope="col">Evento</th>
-                <th scope="col">Posicion del evento</th>
+        <div id="table">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Codigo</th>
+                    <th scope="col">Disciplina</th>
+                    <th scope="col">Tipo de Disciplina</th>
+                    <th scope="col">Evento</th>
+                    <th scope="col">Posicion del evento</th>
 
-            </tr>
-            </thead>
-            <tbody id="body1">
+                </tr>
+                </thead>
+                <tbody id="body1">
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
 
     </div>
-
 </div>
 
 <div class="card m-5">
@@ -211,12 +212,14 @@
                 </select>
 
                 <label for="createEventPosition">Posición en la que quedó en el evento</label>
-                <input type="text" class="form-control" placeholder="Posicion" id="createEventPosition">
+                <input type="text" class="form-control" placeholder="Posicion" onkeydown="return SoloNumeros(event);"
+                       id="createEventPosition">
             </div>
+
         </form>
 
         <div class="mb-3" style="text-align: center">
-            <button type="button" class="btn btn-primary" onclick="reset()" id="addButton">Agregar
+            <button type="button" class="btn btn-primary" onclick="reload()" id="addButton">Agregar
             </button>
         </div>
 
@@ -245,13 +248,13 @@
         </form>
 
         <div class="mb-3" style="text-align: center">
-            <button type="button" class="btn btn-primary" onclick="reset()" id="deleteButton">Eliminar</button>
+            <button type="button" class="btn btn-primary" onclick="reload()" id="deleteButton">Eliminar</button>
         </div>
 
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="./script.js"></script>
-
 </body>
 </html>

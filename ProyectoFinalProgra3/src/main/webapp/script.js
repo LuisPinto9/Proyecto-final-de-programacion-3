@@ -1,11 +1,11 @@
 function begin() {
-
+    disableButton1(true)
     const xhr = new XMLHttpRequest();
     xhr.open('get', 'servlet-control?option=1', true)
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const data = JSON.parse(xhr.responseText)
-            listData(data)
+            listData()
             events(data)
         }
     }
@@ -13,14 +13,17 @@ function begin() {
 
 }
 
-function listButton() {
-
+function listData() {
     const xhr2 = new XMLHttpRequest();
     xhr2.open('get', 'servlet-control?option=1', true)
     xhr2.onreadystatechange = () => {
         if (xhr2.readyState === 4 && xhr2.status === 200) {
             const data = JSON.parse(xhr2.response)
-            listData(data)
+            data.sort((a, b) => a.name.localeCompare(b.name)).forEach((participant) => {
+                participant.events.forEach((event) => {
+                    initialTable(event.discipline, participant.name, participant.id, event.eventPosition, event.disciplineType, event.eventName)
+                })
+            })
 
         }
     }
@@ -28,34 +31,18 @@ function listButton() {
 
 }
 
-function reset() {
-
-    const body1 = document.getElementById("body1");
-    body1.innerHTML = "";
-
+function reload() {
+    location.reload()
 }
 
 function reset2() {
 
-    const bodyS = document.getElementById("bodyS")
-
-    bodyS.innerHTML = "";
+    document.getElementById("bodyS").innerHTML = "";
 }
 
 function reset3() {
 
-    const bodyS1 = document.getElementById("bodyS1")
-
-    bodyS1.innerHTML = "";
-}
-
-function listData(data) {
-
-    data.sort((a, b) => a.name.localeCompare(b.name)).forEach((participant) => {
-        participant.events.forEach((event) => {
-            initialTable(event.discipline, participant.name, participant.id, event.eventPosition, event.disciplineType, event.eventName)
-        })
-    })
+    document.getElementById("bodyS1").innerHTML = "";
 }
 
 function initialTable(discipline, name, id, position, disciplineType, event) {
@@ -201,7 +188,7 @@ document.getElementById("addButton").addEventListener("click", () => {
     let eventPosition = document.getElementById("createEventPosition").value
 
     if (name === "" || id === "" || discipline === "Seleccione..." || disciplineType === "Seleccione..." || event === "Seleccione..." || eventPosition === "") {
-        alert("Rellene todos los espaios")
+        alert("Rellene todos los espacios")
         disableButton1(true)
 
     } else {
@@ -215,9 +202,8 @@ document.getElementById("addButton").addEventListener("click", () => {
         const data = `name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`;
         xhr3.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr3.send(data)
-        listButton()
         document.getElementById("create").reset();
-
+        document.getElementById("body1").innerHTML = '';
     }
 })
 
@@ -236,8 +222,8 @@ document.getElementById("deleteButton").addEventListener("click", () => {
         const data = `id=${id}`;
         xhr4.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr4.send(data)
-        listButton()
         document.getElementById("form2").reset();
+        document.getElementById("body1").innerHTML="";
     }
 
 })

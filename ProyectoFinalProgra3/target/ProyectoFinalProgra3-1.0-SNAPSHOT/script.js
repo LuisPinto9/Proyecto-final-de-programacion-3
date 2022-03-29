@@ -1,25 +1,29 @@
 function begin() {
-
+    disableButton1(true)
     const xhr = new XMLHttpRequest();
     xhr.open('get', 'servlet-control?option=1', true)
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const data = JSON.parse(xhr.responseText)
-            listData(data)
+            listData()
+            events(data)
         }
     }
     xhr.send(null)
 
 }
 
-function listButton() {
-
+function listData() {
     const xhr2 = new XMLHttpRequest();
     xhr2.open('get', 'servlet-control?option=1', true)
     xhr2.onreadystatechange = () => {
         if (xhr2.readyState === 4 && xhr2.status === 200) {
             const data = JSON.parse(xhr2.response)
-            listData(data)
+            data.sort((a, b) => a.name.localeCompare(b.name)).forEach((participant) => {
+                participant.events.forEach((event) => {
+                    initialTable(event.discipline, participant.name, participant.id, event.eventPosition, event.disciplineType, event.eventName)
+                })
+            })
 
         }
     }
@@ -27,34 +31,18 @@ function listButton() {
 
 }
 
-function reset() {
-
-    const body1 = document.getElementById("body1");
-    body1.innerHTML = "";
-
+function reload() {
+    location.reload()
 }
 
 function reset2() {
 
-    const bodyS = document.getElementById("bodyS")
-
-    bodyS.innerHTML = "";
+    document.getElementById("bodyS").innerHTML = "";
 }
 
 function reset3() {
 
-    const bodyS1 = document.getElementById("bodyS1")
-
-    bodyS1.innerHTML = "";
-}
-
-function listData(data) {
-
-    data.sort((a, b) => a.name.localeCompare(b.name)).forEach((participant) => {
-        participant.events.forEach((event) => {
-            initialTable(event.discipline, participant.name, participant.id, event.eventPosition, event.disciplineType, event.eventName)
-        })
-    })
+    document.getElementById("bodyS1").innerHTML = "";
 }
 
 function initialTable(discipline, name, id, position, disciplineType, event) {
@@ -143,16 +131,6 @@ function compare(idC, data) {
     return status
 }
 
-function compare1(nameC, data) {
-    let status = false
-    data.forEach(e => {
-        if (e.name === nameC) {
-            status = true
-        }
-    })
-    return status
-}
-
 function disableButton(estado) {
     const button = document.getElementById("addButton")
     const disci = document.getElementById("createDiscipline")
@@ -210,9 +188,11 @@ document.getElementById("addButton").addEventListener("click", () => {
     let eventPosition = document.getElementById("createEventPosition").value
 
     if (name === "" || id === "" || discipline === "Seleccione..." || disciplineType === "Seleccione..." || event === "Seleccione..." || eventPosition === "") {
-        alert("Rellene todos los espaios")
+        alert("Rellene todos los espacios")
+        disableButton1(true)
 
     } else {
+        disableButton1(false)
         const xhr3 = new XMLHttpRequest();
         xhr3.open("post", 'servlet-control?option=2', true)
         xhr3.onreadystatechange = () => {
@@ -222,42 +202,10 @@ document.getElementById("addButton").addEventListener("click", () => {
         const data = `name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`;
         xhr3.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr3.send(data)
-        listButton()
         document.getElementById("create").reset();
-
+        document.getElementById("body1").innerHTML = '';
     }
-}) 
-
-function data() {
-    const xhr = new XMLHttpRequest();
-    xhr.open("get", 'servlet-control?option=1', true)
-            return data = JSON.parse(xhr.responseText);
-
-}
-
-function add(name, id, discipline, disciplineType, event, eventPosition) {
-    const xhr9 = new XMLHttpRequest();
-    xhr9.open("post", 'servlet-control?option=4', true)
-    xhr9.onreadystatechange = () => {
-        if (xhr9.readyState === 4 && xhr9.status === 200) {
-        }
-    }
-    const data = `name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`;
-    xhr9.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr9.send(data)
-}
-
-function add1(name, id, discipline, disciplineType, event, eventPosition) {
-    const xhr3 = new XMLHttpRequest();
-    xhr3.open("post", 'servlet-control?option=2', true)
-    xhr3.onreadystatechange = () => {
-        if (xhr3.readyState === 4 && xhr3.status === 200) {
-        }
-    }
-    const data = `name=${name}&id=${id}&discipline=${discipline}&disciplineType=${disciplineType}&event=${event}&eventPosition=${eventPosition}`;
-    xhr3.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr3.send(data)
-}
+})
 
 document.getElementById("deleteButton").addEventListener("click", () => {
 
@@ -274,8 +222,8 @@ document.getElementById("deleteButton").addEventListener("click", () => {
         const data = `id=${id}`;
         xhr4.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr4.send(data)
-        listButton()
         document.getElementById("form2").reset();
+        document.getElementById("body1").innerHTML="";
     }
 
 })
@@ -287,29 +235,26 @@ document.getElementById("searchButton").addEventListener('click', () => {
     const xhr5 = new XMLHttpRequest();
     xhr5.open("GET", "servlet-control?option=1", true);
 
-    let cont = 0;
-
     xhr5.onreadystatechange = () => {
         if (xhr5.readyState === 4 && xhr5.status === 200) {
             const data = JSON.parse(xhr5.responseText);
-
             let tabla = document.getElementById('tabla');
+            let bodyS = document.getElementById("bodyS")
 
             data.forEach(participant => {
-                let fila = document.createElement('tr');
-                let td = document.createElement('td');
 
-                if (participant.id === initio) {
+                participant.events.forEach(event => {
 
-                    participant.events.forEach(event => {
+                    let fila = document.createElement('tr');
+                    let td = document.createElement('td');
+
+                    if (participant.id === initio) {
+
                         const name = document.getElementById("labelName")
                         const id = document.getElementById("labelId")
 
                         name.innerText = participant.name
                         id.innerText = participant.id
-
-                        cont++;
-
                         td = document.createElement('td');
                         td.innerText = event.discipline;
                         fila.appendChild(td);
@@ -326,17 +271,16 @@ document.getElementById("searchButton").addEventListener('click', () => {
                         td = document.createElement('td');
                         td.innerText = event.eventPosition;
                         fila.appendChild(td);
-                    })
 
-
-                }
-                bodyS.appendChild(fila);
+                    }
+                    bodyS.appendChild(fila);
+                })
             })
 
+            tabla.appendChild(bodyS);
         }
-
-        tabla.appendChild(bodyS);
     }
+
 
     xhr5.send(null);
 
@@ -344,64 +288,81 @@ document.getElementById("searchButton").addEventListener('click', () => {
     reset2()
 })
 
+function events(data) {
+    let events = Array()
+    data.forEach(participant => {
+        participant.events.forEach(event => {
+            if (!competRepeated(event, events)) {
+                document.getElementById("events").add(new Option(event.eventName))
+                events.push(event)
+            }
+        })
+    })
+
+}
+
+function competRepeated(comp, events) {
+    let status = false
+    events.forEach(event => {
+        if (event.eventName === comp.eventName) {
+            status = true
+        }
+    })
+    return status
+}
+
 document.getElementById("resultsButton").addEventListener("click", () => {
+
     const initio = document.getElementById('events').value;
-
-
     const xhr7 = new XMLHttpRequest();
     xhr7.open("GET", "servlet-control?option=1", true);
-
-    let cont1 = 0;
 
     xhr7.onreadystatechange = () => {
         if (xhr7.readyState === 4 && xhr7.status === 200) {
             const data = JSON.parse(xhr7.responseText);
-            data.forEach(p =>{
-                p.events.forEach(e=>{
-                    let tabla = document.getElementById('tabla1');
+            let tabla1 = document.getElementById('tabla1');
+            let bodyS1 = document.getElementById("bodyS1")
 
-                    for (let i = 0; i < data.length; ++i) {
+            data.forEach(participant => {
 
-                        let fila1 = document.createElement('tr');
-                        let td1 = document.createElement('td');
+                participant.events.forEach(event => {
 
-                        if (data[i].event === initio) {
+                    let fila1 = document.createElement('tr');
+                    let td1 = document.createElement('td');
 
-                            cont1++;
-                            td1.innerText = p.name;
-                            fila1.appendChild(td1);
+                    if (event.eventName === initio) {
 
-                            td1 = document.createElement('td');
-                            td1.innerText = p.id;
-                            fila1.appendChild(td1);
+                        td1.innerText = participant.name;
+                        fila1.appendChild(td1);
 
-                            td1 = document.createElement('td');
-                            td1.innerText = e.discipline;
-                            fila1.appendChild(td1);
+                        td1 = document.createElement('td');
+                        td1.innerText = participant.id;
+                        fila1.appendChild(td1);
+
+                        td1 = document.createElement('td');
+                        td1.innerText = event.discipline;
+                        fila1.appendChild(td1);
 
 
-                            td1 = document.createElement('td');
-                            td1.innerText = e.disciplineType;
-                            fila1.appendChild(td1);
+                        td1 = document.createElement('td');
+                        td1.innerText = event.disciplineType;
+                        fila1.appendChild(td1);
 
-                            td1 = document.createElement('td');
-                            td1.innerText = e.eventName;
-                            fila1.appendChild(td1);
+                        td1 = document.createElement('td');
+                        td1.innerText = event.eventName;
+                        fila1.appendChild(td1);
 
-                            td1 = document.createElement('td');
-                            td1.innerText = e.eventPosition;
-                            fila1.appendChild(td1);
-
-                        }
-                        bodyS1.appendChild(fila1);
+                        td1 = document.createElement('td');
+                        td1.innerText = event.eventPosition;
+                        fila1.appendChild(td1);
 
                     }
+                    bodyS1.appendChild(fila1);
 
-                    tabla.appendChild(bodyS1);
                 })
             })
 
-
+            tabla1.appendChild(bodyS1);
         }
     };
     xhr7.send(null);
